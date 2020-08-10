@@ -11,6 +11,14 @@ crud      based on https://www.techiediaries.com/angular/angular-9-8-crud-exampl
 JWT token based on https://www.techiediaries.com/angular/jwt-authentication-angular-9-example/
 
 #
-# 
+# ng overview:
 #
 ng new minimal-doorlockd
+(cd minimal-doorlockd)
+ng generate module doorlockd --routing
+ng generate service doorlockd/doorlockd-api-client
+ng generate component doorlockd/users
+ng generate component doorlockd/tags
+ng generate component doorlockd/unknowntags
+ng generate component doorlockd/hardware
+ng generate component doorlockd/login
