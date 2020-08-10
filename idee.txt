@@ -1,0 +1,16 @@
+
+#
+# angular frondend doorlockd
+#
+
+
+# 
+# examples:
+# 
+crud      based on https://www.techiediaries.com/angular/angular-9-8-crud-example-and-tutorial
+JWT token based on https://www.techiediaries.com/angular/jwt-authentication-angular-9-example/
+
+#
+# 
+#
+ng new minimal-doorlockd
