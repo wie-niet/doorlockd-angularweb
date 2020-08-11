@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { iUnknownTag, iObjType } from '../interfaces';
+import { DoorlockdApiClientService } from '../doorlockd-api-client.service';
 
 @Component({
   selector: 'app-unknowntags',
@@ -6,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./unknowntags.component.css']
 })
 export class UnknowntagsComponent implements OnInit {
+  unknowntags: iUnknownTag[] = [];
 
-  constructor() { }
+  constructor(public doorlockdApiClient: DoorlockdApiClientService) { }
 
   ngOnInit(): void {
+    this.doorlockdApiClient.getAll(iObjType.unknowntags).subscribe((data: iUnknownTag[])=>{
+      console.log(data);
+      this.unknowntags = data;
+    })
+
   }
 
 }

@@ -22,3 +22,16 @@ ng generate component doorlockd/tags
 ng generate component doorlockd/unknowntags
 ng generate component doorlockd/hardware
 ng generate component doorlockd/login
+
+
+
+
+#
+# Todo: 
+# 
+* bug: afvangen delete http response .
+* bug: detect api disconnected.
+* validation errors in create form (passing data-binded var?).
+* fix whitelist / blacklist api url  in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts'
+* ng-bootstrap (ng add @ng-bootstrap/ng-bootstrap)
+* npm install angular-feather ---> https://icons.getbootstrap.com ??

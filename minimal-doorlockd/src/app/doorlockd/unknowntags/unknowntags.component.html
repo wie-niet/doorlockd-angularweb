@@ -1,1 +1,43 @@
-<p>unknowntags works!</p>
+
+    <div class="table-responsive">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Unkowntags</h1>
+	        <div class="btn-toolbar mb-2 mb-md-0">
+	          <div class="btn-group mr-2">
+	            <button class="btn btn-sm btn-outline-secondary">Delete all</button>
+	          </div>
+	        </div>
+          </div>
+
+        <table class="table table-striped table-sm table-nowrap">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Hardware ID</th>
+                <th>Created</th>                            
+                <th>Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let tag of unknowntags">
+            <td>{{tag.id}}</td>
+            <td>{{tag.hwid}}</td>
+            <td>{{tag.created_at | date:'short' }}</td>
+            <td>{{tag.updated_at | date:'short' }}</td>
+            
+            <td>
+                <button type="button" [routerLink]="['/crud/details/', tag.id]">edit</button>
+                <button type="button" (click)="doorlockdApiClient.formDelete('tags', tag.id)">trash</button>
+            </td>
+        </tr>
+    
+          <tr *ngIf="!unknowntags.length">
+            <th colspan="7">nothing to display.</th>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    
+  
