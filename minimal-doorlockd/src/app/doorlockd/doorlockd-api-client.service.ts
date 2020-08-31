@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, observable } from 'rxjs';
 import { catchError,tap, timeout } from 'rxjs/operators';
 
 import { iTag,iUser,iUnknownTag,iObjType, iChangelog, AuthResp } from './interfaces';
@@ -245,18 +245,29 @@ export class DoorlockdApiClientService {
          console.log('error object: ' , error);
          console.log('error here 2')
 
+        if (error.status == 0) {
+          console.log('asume it is an DELETE HTTP 204 response bug...  ');
+          window.alert("Likely you ran into an HTTP 204 response in safari.., refresh page to solve.\n");
+          // TODO , return something so it looks like no error has happened
+          // return throwError(error);
+        }
+
         // if validation error:
-        if (error.error.type == "validation") {
+        else if (error.error.type == "validation") {
           console.log("Validation error: " + error.error.message);
           window.alert("Validation error,\n" + error.error.message);
         }          
          // if something is wrong with our auth token:
-         if (error.error.error == "token error") {
+        else if (error.error.error == "token error") {
           console.log('your token is broken, re-login please...');
           window.alert('your token is broken, re-login please...');
           // loggin out
           let doorlockClientService = new DoorlockdApiClientService(null);
           doorlockClientService.logout();
+
+        } else {
+          window.alert("Some error,\n" + errorMessage);
+          // 
         }
 
 

@@ -11,6 +11,12 @@ crud      based on https://www.techiediaries.com/angular/angular-9-8-crud-exampl
 JWT token based on https://www.techiediaries.com/angular/jwt-authentication-angular-9-example/
 
 #
+# assets:
+#
+* https://icons.getbootstrap.com/
+
+
+#
 # ng overview:
 #
 ng new minimal-doorlockd
@@ -27,11 +33,22 @@ ng generate component doorlockd/login
 
 
 #
-# Todo: 
+# Todo: minimal
 # 
-* bug: afvangen delete http response .
-* bug: detect api disconnected.
-* validation errors in create form (passing data-binded var?).
-* fix whitelist / blacklist api url  in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts'
-* ng-bootstrap (ng add @ng-bootstrap/ng-bootstrap)
-* npm install angular-feather ---> https://icons.getbootstrap.com ??
+[x] edit user
+[ ] edit tag
+[ ] edit unknowntag (delete + create tag)
+[ ] hele pagina in angular component (zodat login en navigatie met data bindings werken.)
+[ ] fix whitelist / blacklist api url  in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts'
+[ ] bug: detect api disconnected.
+#
+# Todo: later
+#
+[ ] edit user: collapse "change password"; "advanced (hash)"
+[-] bug: afvangen delete http response (Safari bug..) .
+[ ] validation errors in create form (passing data-binded var?).
+[-] ng-bootstrap (ng add @ng-bootstrap/ng-bootstrap) | https://ng-bootstrap.github.io/#/getting-started#installation
+[X] npm install angular-feather ---> https://icons.getbootstrap.com ??
+ -> fail: not compatible , switch to bootstrap icons. 
+[ ] 
+ 

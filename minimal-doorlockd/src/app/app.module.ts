@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { DoorlockdModule } from './doorlockd/doorlockd.module'
+import { DoorlockdModule } from './doorlockd/doorlockd.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { DoorlockdModule } from './doorlockd/doorlockd.module'
   imports: [
     BrowserModule,
     AppRoutingModule,
-    DoorlockdModule
+    DoorlockdModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

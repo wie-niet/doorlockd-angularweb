@@ -21,4 +21,14 @@ export class TagsComponent implements OnInit {
 
   }
 
+  formDelete(item_id) {
+    if(confirm('Do you really want to delete this Tag?')) {
+      this.doorlockdApiClient.delete(iObjType.tags, item_id).subscribe(res => {
+        console.log('deleted tag ' + item_id );
+        this.ngOnInit();
+      });
+
+    }
+  }
+
 }

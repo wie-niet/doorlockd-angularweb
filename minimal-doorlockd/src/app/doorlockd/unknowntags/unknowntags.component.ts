@@ -20,4 +20,14 @@ export class UnknowntagsComponent implements OnInit {
 
   }
 
+
+  formDelete(item_id) {
+    if(confirm('Do you really want to delete this Unknowntag?')) {
+      this.doorlockdApiClient.delete(iObjType.unknowntags, item_id).subscribe(res => {
+        console.log('deleted unknowntag ' + item_id );
+        this.ngOnInit();
+      });
+    }
+  }
+
 }

@@ -28,7 +28,7 @@
             
             <td>
                 <button type="button" [routerLink]="['/crud/details/', tag.id]">edit</button>
-                <button type="button" (click)="doorlockdApiClient.formDelete('tags', tag.id)">trash</button>
+                <button type="button" (click)="formDelete(tag.id)">trash</button>
             </td>
         </tr>
     
