@@ -81,7 +81,8 @@ export class UsersComponent implements OnInit {
 
     // init form
     this.formUserEdit = this.fb.group({
-      id: new FormControl({value: user.id, disabled: true}),
+      // id: new FormControl({value: user.id, disabled: true}),
+      id: [user.id],
       email: [user.email],
       password_plain: [user.password_plain],
       password_hash: [user.password_hash],

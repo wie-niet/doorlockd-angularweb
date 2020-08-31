@@ -41,6 +41,7 @@ ng generate component doorlockd/login
 [ ] hele pagina in angular component (zodat login en navigatie met data bindings werken.)
 [ ] fix whitelist / blacklist api url  in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts'
 [ ] bug: detect api disconnected.
+[ ] readonly id value in forms (this.registerForm.getRawValue()  ) 
 #
 # Todo: later
 #
