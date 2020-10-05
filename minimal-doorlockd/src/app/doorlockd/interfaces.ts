@@ -52,6 +52,10 @@ export interface iChangelogDiff {
     op: string;
 }
 
+export interface iHardwareItem {
+    [key: string]: any;
+}
+
 // AuthResp json response for:
 //  * /api/refresh_token/		[POST] 
 //  * /api/login/				[POST] 

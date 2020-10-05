@@ -36,20 +36,42 @@ ng generate component doorlockd/login
 # Todo: minimal
 # 
 [x] edit user
-[ ] edit tag
-[ ] edit unknowntag (delete + create tag)
-[ ] hele pagina in angular component (zodat login en navigatie met data bindings werken.)
+[x] edit tag
+[x] edit unknowntag (delete + create tag)
+[x] replace feather-icons with bootstrap svg
+[x] refresh button [tags|unknowntags|users].
+[x] dashboard component (html)
+[x] debug component (debug viewer)
+[x] hele pagina in angular component (zodat login en navigatie met data bindings werken.)
+[?] fix login refresh token.
+[x] login drop down menu (user name | login | logout | debug component ?) 
 [ ] fix whitelist / blacklist api url  in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts'
-[ ] bug: detect api disconnected.
-[ ] readonly id value in forms (this.registerForm.getRawValue()  ) 
+[x] readonly id value in forms (this.registerForm.getRawValue()  ) 
+[ ] changelog viewer. [component -> user,tag ] <changelog model="user" id="1"></changelog>???
+[ ] loading message. / error message.
+	- tags: table, modal new , modal edit, delete 
+	- unkown tags: table, create , delete
+	- users ....
+
+#
+# Bugs
+#
+[x] route back to /users/ (or redirect back to current view) after editing self (/users/:uid ).
+[x] username (e-mail) forms longer ...!
+[ ] bug: detect api disconnected. (maybe due to refresh page)
 #
 # Todo: later
 #
-[ ] edit user: collapse "change password"; "advanced (hash)"
+[ ] api request (request_status: pending|ok|failed ), see https://coryrylan.com/blog/angular-http-pending-request-pattern
+[ ] edit user: collapse "change password"; "advanced (hash); changlog viewer"
 [-] bug: afvangen delete http response (Safari bug..) .
 [ ] validation errors in create form (passing data-binded var?).
 [-] ng-bootstrap (ng add @ng-bootstrap/ng-bootstrap) | https://ng-bootstrap.github.io/#/getting-started#installation
 [X] npm install angular-feather ---> https://icons.getbootstrap.com ??
  -> fail: not compatible , switch to bootstrap icons. 
-[ ] 
+ 
+#
+# Ideeen:
+#
+[ ] gui: unkowntag , tag laatst gezien ( current_server_time - updated_time ) {{ live timer in angular ?}} 
  

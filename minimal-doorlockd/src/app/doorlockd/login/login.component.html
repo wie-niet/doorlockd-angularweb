@@ -3,15 +3,17 @@
     <form [formGroup]="loginForm" (ngSubmit)="submitForm()" novalidate>
         <div class="form-group">
             <label>e-mail</label>
-            <input [hidden]="doorlockdApiClient.loggedIn" type="text" formControlName="email" class="form-control" maxlength="20" >
+            <input [hidden]="doorlockdApiClient.loggedIn" type="text" formControlName="email" class="form-control" maxlength="128" >
             <input disabled [hidden]="!doorlockdApiClient.loggedIn" value=" {{ doorlockdApiClient.loggedInUsername }} ">
         </div>
         <div class="form-group">
             <label>password</label>
-            <input [hidden]="doorlockdApiClient.loggedIn" type="password" formControlName="password" class="form-control" maxlength="20">
+            <input [hidden]="doorlockdApiClient.loggedIn" type="password" formControlName="password" class="form-control" maxlength="128">
             <input disabled [hidden]="!doorlockdApiClient.loggedIn" value="*******">
 
         </div>
+        <div [hidden]="!req_loading" class="alert alert-dark" role="alert">Loading... please wait {{req_loading}}</div>
+        <div [hidden]="!req_error" class="alert alert-warning" role="alert">Error: {{req_error}}</div>
         <button [disabled]="doorlockdApiClient.loggedIn" type="submit">login</button>
         <button [disabled]="!doorlockdApiClient.loggedIn" (click)="submitLogout()" >logout</button>
 
@@ -24,11 +26,12 @@
 </div>
 
 
-<!-- <button [disabled]="!doorlockdApiClient.loggedIn" (click)="submitRefreshToken()" >refresh token</button> -->
+<button [disabled]="!doorlockdApiClient.loggedIn" (click)="submitRefreshToken()" >refresh token</button>
 <div> is logged on: <code>{{ doorlockdApiClient.loggedIn }}</code></div>
 <pre>
 doorlockdApiClient.tokenInfo: {{ doorlockdApiClient.tokenInfo |json }}
 
 doorlockdApiClient.loggedIn: {{ doorlockdApiClient.loggedIn }}
 doorlockdApiClient.loggedInUsername: {{ doorlockdApiClient.loggedInUsername }}
+
 </pre>

@@ -1,1 +1,12 @@
-<p>hardware works!</p>
+<p></p>
+
+
+<div *ngFor="let hw_item of hw">
+   <span>{{hw_item[0]}}</span>: <button (click)="updateStatus(hw_item, !hw_item[1].status)">{{hw_item[1].status}}</button>
+   <code> {{ hw_item[1] | json }}</code> 
+    
+</div>
+
+<pre>
+    {{ hw | json }}
+</pre>

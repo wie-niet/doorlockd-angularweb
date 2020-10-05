@@ -4,11 +4,10 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError, observable } from 'rxjs';
 import { catchError,tap, timeout } from 'rxjs/operators';
 
-import { iTag,iUser,iUnknownTag,iObjType, iChangelog, AuthResp } from './interfaces';
+import { iTag,iUser,iUnknownTag,iObjType, iChangelog, AuthResp,iHardwareItem } from './interfaces';
 
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { NullTemplateVisitor } from '@angular/compiler';
-
 
 
 @Injectable({
@@ -17,10 +16,12 @@ import { NullTemplateVisitor } from '@angular/compiler';
 export class DoorlockdApiClientService {
   private jwt_helper = new JwtHelperService();
   public loggedInUsername = null;
+  public loggedInUid = null;
   private tokenRefreshEvent = null;
 
-  
-  private apiServer = "http://192.168.7.2:8000/api";
+  // public apiServer = "http://192.168.7.2:8000/api";
+  public apiServer = "/api";
+
   httpOptions = {
     // observe: 'response',
     headers: new HttpHeaders({
@@ -45,10 +46,12 @@ export class DoorlockdApiClientService {
         if (res.status) {
           localStorage.setItem('access_token', res.token);
           this.scheduleRefreshEvent(schedule_refresh);
-          this.getLoggedInUsername();
+          this.getLoggedInUsername(email_password.email);
 
         } else {
-          this.errorHandler(res)
+          // this.errorHandler(res)
+          console.log("Something went wrong", res)
+          return throwError(res);
         }
         
       }))
@@ -56,6 +59,7 @@ export class DoorlockdApiClientService {
     scheduleRefreshEvent(schedule_refresh=true) {
       if (!schedule_refresh) {
         // do nothing
+        console.log('scheduleRefreshEvent() done nothing.');
         return(false);
       }
 
@@ -84,9 +88,11 @@ export class DoorlockdApiClientService {
 
           localStorage.setItem('access_token', res.token);
           this.scheduleRefreshEvent(schedule_refresh);
-          this.getLoggedInUsername();
+          this.getLoggedInUsername(null, true); // force refresh
         } else {
-          this.errorHandler(res)
+          console.log("Something went wrong with refreshing token, you will be logged out!")
+          this.errorHandler(res);
+          localStorage.removeItem('access_token');
         }
 
       }))
@@ -109,26 +115,44 @@ export class DoorlockdApiClientService {
       return !this.jwt_helper.isTokenExpired(access_token);
     }
     
-    getLoggedInUsername() {
+    getLoggedInUsername(setuser = null, force_refresh=false) {
       let access_token:string = localStorage.getItem('access_token');
       if(access_token == null) {
         this.loggedInUsername = null;
+        this.loggedInUid = null;
+      } else {
+        let decodedToken = this.jwt_helper.decodeToken(access_token);
+        this.loggedInUid = decodedToken.uid;
+        console.log('in loggedInUsername : decodedToken.uid :', decodedToken.uid );
+
+      if(!force_refresh) {
+        // incase we are just logging in
+        if(setuser != null ) {
+          this.loggedInUsername = setuser;
+          return;
+        }
+
+        // incase we have stored the username
+        if(this.remember_me_name) {
+          this.loggedInUsername = this.remember_me_name;
+          return;
+        }
       }
 
-      let decodedToken = this.jwt_helper.decodeToken(access_token);
-      console.log('in loggedInUsername : decodedToken.uid :', decodedToken.uid);
+        // decodedToken.uid
+        this.getUserById(decodedToken.uid ).subscribe((user: iUser)=>{
+          this.loggedInUsername = user.email;
 
-
-      // decodedToken.uid
-       this.getUserById(decodedToken.uid ).subscribe((user: iUser)=>{
-        this.loggedInUsername = user.email;
-
-        // store remember_me_name if remember_me is set to true
-        if(this.remember_me) {
-          this.remember_me_name = this.loggedInUsername;
-        }
+          // store remember_me_name if remember_me is set to true
+          if(this.remember_me) {
+            this.remember_me_name = this.loggedInUsername;
+          }
         
-      });
+        });
+      }
+
+
+
 
 
     }
@@ -147,6 +171,7 @@ export class DoorlockdApiClientService {
       if (!remember_me) {
         // remove all data from localStorage 
         localStorage.removeItem('remember_me')
+        localStorage.removeItem('remember_me_name')
       } else {
         // set to true, unless a username is already available
         let username = this.loggedInUsername !== null ? this.loggedInUsername : true;
@@ -156,11 +181,11 @@ export class DoorlockdApiClientService {
     }
 
     public get remember_me_name(): string {
-      return localStorage.getItem('remember_me');
+      return localStorage.getItem('remember_me_name');
     }
 
     public set remember_me_name(username: string) {
-      localStorage.setItem('remember_me', username);
+      localStorage.setItem('remember_me_name', username);
     }
 
     public get tokenInfo(): object {
@@ -215,6 +240,7 @@ export class DoorlockdApiClientService {
       return this.httpClient.delete<iTag|iUser|iUnknownTag>(this.apiServer +'/'+ objType +'/'+ id, this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
+        
       )
     }
 
@@ -226,11 +252,20 @@ export class DoorlockdApiClientService {
 
     }
 
-    formDelete(objType:iObjType,item_id) {
-      if(confirm('Do you really want to delete this Tag?')) {
-        this.delete(objType, item_id).subscribe(
-        )  
-      }
+    getHwByID(id): Observable<iHardwareItem> {
+      let objType = 'hw';
+      return this.httpClient.get<iHardwareItem>(this.apiServer + '/'+ objType +'/' + id)
+      .pipe(
+        catchError(this.errorHandler)
+      )
+    }
+
+    updateHwByID(id, item): Observable<iHardwareItem> {
+      let objType = 'hw';
+      return this.httpClient.put<iHardwareItem>(this.apiServer +'/'+ objType +'/'+ id, JSON.stringify(item), this.httpOptions)
+      .pipe(
+        catchError(this.errorHandler)
+      )
     }
 
     errorHandler(error) {
@@ -247,15 +282,21 @@ export class DoorlockdApiClientService {
 
         if (error.status == 0) {
           console.log('asume it is an DELETE HTTP 204 response bug...  ');
-          window.alert("Likely you ran into an HTTP 204 response in safari.., refresh page to solve.\n");
+          // window.alert("Likely you ran into an HTTP 204 response in safari.., refresh page to solve.\n");
           // TODO , return something so it looks like no error has happened
-          // return throwError(error);
+          return throwError(error);
         }
 
         // if validation error:
         else if (error.error.type == "validation") {
           console.log("Validation error: " + error.error.message);
           window.alert("Validation error,\n" + error.error.message);
+          return throwError(error);
+        }          
+        // if access denied error:
+        else if (error.error.error == "access denied") {
+          console.log("Access Denied: " + error.error.message);
+          window.alert("Access Denied:,\n" + error.error.message);
         }          
          // if something is wrong with our auth token:
         else if (error.error.error == "token error") {
@@ -268,6 +309,7 @@ export class DoorlockdApiClientService {
         } else {
           window.alert("Some error,\n" + errorMessage);
           // 
+          return throwError(error);
         }
 
 

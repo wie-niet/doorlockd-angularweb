@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+
+.overlay-blanket {
+    /* position: fixed; */
+
+    filter: alpha(opacity=75);
+    -moz-opacity: 0.75;
+    opacity: 0.75;
+}
+
+.overlay-message {
+    position: absolute;
+    margin-left: 30%;
+    top: 30%;
+}

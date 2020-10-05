@@ -13,15 +13,20 @@ import { LoginComponent } from './login/login.component';
 
 // import { JwtModule } from '@auth0/angular-jwt';
 import { JwtModule } from "@avatsaev/angular-jwt";
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { DebugViewerComponent } from './debug-viewer/debug-viewer.component';
+
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
-  declarations: [UsersComponent, TagsComponent, UnknowntagsComponent, HardwareComponent, LoginComponent],
+  declarations: [UsersComponent, TagsComponent, UnknowntagsComponent, HardwareComponent, LoginComponent, DashboardComponent, DebugViewerComponent],
   imports: [
     CommonModule,
     DoorlockdRoutingModule,
     HttpClientModule,
     FormsModule,
+    NgbModule,
     ReactiveFormsModule,
     JwtModule.forRoot({
       config: {

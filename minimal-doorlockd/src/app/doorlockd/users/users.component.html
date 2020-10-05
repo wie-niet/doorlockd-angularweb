@@ -1,16 +1,16 @@
-
-
-<div class="table-responsive">
+<div *ngIf="!doorlockdApiClient.loggedIn">You need to login first.</div>
+<div *ngIf="doorlockdApiClient.loggedIn" class="table-responsive">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
         <h1 class="h2">Users</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group mr-2">
-          <button class="btn btn-sm btn-outline-secondary" (click)="openmodal(modalUsersNew)" >Add new</button>
+          <button class="btn btn-sm btn-outline-secondary" (click)="formRefresh()" >Refresh</button>
+          <button class="btn btn-sm btn-outline-secondary" (click)="openModalTagNew(modalUsersNew)" >Add new</button>
         </div>
       </div>
       </div>
 
-    <table class="table table-striped table-sm table-nowrap">
+    <table class="table table-striped table-sm table-nowrap" [class.overlay-blanket]="req_loading_table">
     <thead>
         <tr>
             <th>#</th>
@@ -30,11 +30,11 @@
         <td>{{user.updated_at | date:'short' }}</td>
         <td>
           <div class="btn-group" role="group" aria-label="user control">
-                  <button class="btn btn-sm py-0" type="button" (click)="openmodalEdit(modalUsersEdit, user)"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <button class="btn btn-sm py-0" type="button" (click)="openmodalEdit(modalUsersEdit, user)" data-toggle="tooltip" data-placement="bottom" title="Edit user"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                       <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z"/>
                       <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z"/>
                   </svg></button>
-                    <button class="btn btn-sm py-0" type="button" (click)="formDelete(user.id)"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <button class="btn btn-sm py-0" type="button" (click)="formDelete(user.id)" data-toggle="tooltip" data-placement="bottom" title="Delete user"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                       <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                       <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                   </svg></button>
@@ -48,6 +48,9 @@
 
     </tbody>
   </table>
+  <!-- loading and error messages: -->
+  <div [hidden]="!req_loading_table" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
+  <div [hidden]="!req_error_table" class="alert alert-warning overlay-message" role="alert">Error: {{req_error_table}}</div>
 </div>
 
 
@@ -62,13 +65,18 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-	        <div class="row form-group">
+      <div class="modal-body" [class.overlay-blanket]="req_loading_modal" >
+        <div class="row form-group">
+            <div class="col">
+                <div [hidden]="!req_error_modal" class="alert alert-warning nooverlay-message" role="alert">{{req_error_modal}}</div>
+            </div>
+        </div>
+        <div class="row form-group">
 			    <div class="col">
 	            	<label for="email">E-mail</label>
 				</div>
 			    <div class="col">
-					<input type="text" id="email" formControlName="email" class="form-control" maxlength="30">
+					<input type="text" id="email" formControlName="email" class="form-control" maxlength="128">
 				</div>
 	        </div>
 	        <div class="row form-group">
@@ -88,6 +96,9 @@
 				</div>
 	        </div>
       </div>
+      <!-- loading and error messages: -->
+      <div [hidden]="!req_loading_modal" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')" >Close</button>
         <button type="submit" class="btn btn-primary" >Save</button>
@@ -105,55 +116,115 @@
     <div class="modal-content">
 	  <form [formGroup]="formUserEdit" (ngSubmit)="submitUserUpdate()" novalidate>	
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
         <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close"  >
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-	      <div class="row form-group">
-			    <div class="col">
-	          <label for="id">id</label>
-				  </div>
-			    <div class="col">
-					  <input type="text" id="id" formControlName="id" class="form-control" maxlength="10" >
-				  </div>
-	      </div>
-	      <div class="row form-group">
-			    <div class="col">
-	          <label for="email">E-mail</label>
-				  </div>
-			    <div class="col">
-					  <input type="text" id="email" formControlName="email" class="form-control" maxlength="30">
-				  </div>
-	      </div>
+      </div>     
 
-        <div class="row form-group">
-            <div class="col">
-              <label for="password_plain">new Password</label>
-            </div>
-            <div class="col">
-              <input type="password" id="password_plain" formControlName="password_plain" class="form-control" maxlength="20">
-            </div>
+      <div> &nbsp;</div>
+      <div class="row form-group">
+          <div class="col">
+              <div [hidden]="!req_error_modal" class="alert alert-warning nooverlay-message" role="alert">{{req_error_modal}}</div>
           </div>
-          <div class="row form-group">
-            <div class="col">
-              <label for="password_hash">Password hash</label>
-            </div>
-            <div class="col">
-              <input type="text" id="password_hash" formControlName="password_hash" class="form-control" maxlength="128">
-            </div>
-	        </div>
-
-	        <div class="row form-group">
-			    <div class="col">
-					<label for="is_disabled">Disabled</label>
-				</div>
-			    <div class="col">
-					<input type="checkbox" id="is_disabled" formControlName="is_disabled" class="form-control">
-				</div>
-	        </div>
       </div>
+
+      <ul ngbNav #nav="ngbNav" [(activeId)]="editNavId" class="nav-tabs">
+        <li [ngbNavItem]="1">
+          <a ngbNavLink>Edit</a>
+          <!-- edit -->
+          <ng-template ngbNavContent>
+            <div class="row form-group">
+              <div class="col">
+                <label for="id">id</label>
+              </div>
+              <div class="col">
+                {{ formUserEdit.value.id }}
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label for="email">E-mail</label>
+              </div>
+              <div class="col">
+                <input type="text" id="email" formControlName="email" class="form-control" maxlength="128">
+              </div>
+            </div>
+            <div class="row form-group">
+                <div class="col">
+                  <label for="password_plain">new Password</label>
+                </div>
+                <div class="col">
+                  <input type="password" id="password_plain" formControlName="password_plain" class="form-control" maxlength="20">
+                </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label for="is_disabled">Disabled</label>
+              </div>
+              <div class="col">
+                <input type="checkbox" id="is_disabled" formControlName="is_disabled" class="form-control">
+              </div>
+            </div>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <a ngbNavLink>Changelog</a>
+          <ng-template ngbNavContent>
+            <!-- changelog -->
+            <table class="table-nowrap" >
+              <thead>
+                <th>action</th>
+                <th>date</th>
+                <th>user.id</th>
+                <th>attribute</th>
+                <th>value</th>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let changelog of changelogs">
+                  <ng-template #tooltip ><pre style="text-align: left; color:azure;">{{changelog | json }}</pre></ng-template>
+                  <tr *ngFor="let diff of changelog.diff" [ngbTooltip]="tooltip" >
+
+                    <td><code>{{changelog.action}}</code></td>
+                    <td><code>{{changelog.now | date:'short'}}</code></td>
+                    <td><code>user({{changelog.user_id}})</code></td>
+                    <td><code>{{diff.path}}</code></td>
+                    <td><code>{{ (diff.value.length>20)? (diff.value | slice:0:20)+'..':(diff.value) }}</code></td>
+                  </tr>    
+                </ng-container>
+              </tbody>
+            </table>
+            <!-- loading and error messages: -->
+            <div [hidden]="!req_loading_changelogs" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
+            <div [hidden]="!req_error_changelogs" class="alert alert-warning nooverlay-message" role="alert">{{req_error_changelogs}}</div>
+  
+            <!-- <pre>{{ changelogs |json }}</pre> -->
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+          <a ngbNavLink>Advanced</a>
+          <ng-template ngbNavContent>
+            <!-- advanced -->
+            <div class="row form-group">
+              <div class="col">
+                <label for="password_hash">Password hash</label>
+              </div>
+              <div class="col">
+                <textarea class="form-control" id="password_hash" formControlName="password_hash" rows="6" maxlength="128"></textarea>
+              </div>
+            </div>
+  
+          </ng-template>
+        </li>
+      </ul>      
+
+      <div class="modal-body">
+        <div [ngbNavOutlet]="nav" class="mt-2">iets???</div>
+        <!-- <code>Active: {{ editNavId }}</code> -->
+      </div>
+      <!-- loading and error messages: -->
+      <div [hidden]="!req_loading_modal" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')" >Close</button>
         <button type="submit" class="btn btn-primary" >Save</button>
