@@ -6,6 +6,7 @@ import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangelogsComponent } from '../changelogs/changelogs.component';
 
 
 @Component({
@@ -21,12 +22,9 @@ export class UsersComponent implements OnInit {
   req_error_table = null;
   req_loading_modal = false;
   req_error_modal = null;
-  req_loading_changelogs = false;
-  req_error_changelogs = null;
 
   editNavId = 1; // edit user tab
-  changelogs: iChangelog[] = [];
-
+  
   redirectUrl: string | null = null; // redirect url for edit mode 
 
   // formUserNew: FormGroup;
@@ -119,7 +117,7 @@ export class UsersComponent implements OnInit {
       this.users = data;
     }, (res) => {
       console.log('error list users', res.error);
-      this.req_error_modal = res.error.error + ' - ' + res.error.message; 
+      this.req_error_table = res.error.error + ' - ' + res.error.message; 
     })
   }
 
@@ -162,6 +160,17 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  openmodalChangelogs(content, item: iUser) {
+    // init form
+    this.formUserEdit = this.fb.group({
+      id: [item.id]
+    })
+    
+    // open modal
+    const modalRef = this.modalService.open(content);
+
+  }
+
   openmodalEdit(content, user: iUser) {
     // init form
     this.formUserEdit = this.fb.group({
@@ -188,25 +197,40 @@ export class UsersComponent implements OnInit {
       }
     });
 
-    this.loadChangelogs(user.id);
     
   }
 
-  loadChangelogs(item_id) {
+  refreshEditForm() {
     // clear old messages:
-    this.req_error_changelogs = null; 
-    this.req_loading_changelogs = true;
+    this.req_error_modal = null; 
+    this.req_loading_modal = true;
+    this.formUserEdit.disable();
 
-    this.doorlockdApiClient.getChangelogs(iObjType.users, item_id).subscribe((data:[])=>{
-      console.log('get changelogs()', iObjType.users, item_id);
-      this.changelogs = data;
-      this.req_loading_changelogs = false;
-    }, (res) => {
-      console.log('error fetching changelogs', res);
-      this.req_loading_changelogs = false;
-      this.req_error_changelogs = res.error.error + ' - ' + res.error.message; 
-    });
+    // load user 
+    this.doorlockdApiClient.getById(iObjType.users, this.formUserEdit.value.id).subscribe((user:iUser)=>{
+      console.log("refresh user....",user);
+
+      // reset all write-only items:
+      this.formUserEdit.reset();
+      // for all items in user:
+      for (let key in user) {
+        this.formUserEdit.get(key).setValue(user[key]);
+      }
+
+      this.req_loading_modal = false;
+      this.formUserEdit.enable();
+
+     }, (res) => {
+        console.log('error update tag', res.error);
+        this.formUserEdit.enable();
+        this.req_loading_modal = false;
+        this.req_error_modal = res.error.error + ' - ' + res.error.message; 
+  
+    })
+
   }
+
+
 
   submitUserUpdate() {
     this.formUserEdit.disable();

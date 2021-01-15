@@ -4,6 +4,7 @@ import { DoorlockdApiClientService } from '../doorlockd-api-client.service';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangelogsComponent } from '../changelogs/changelogs.component';
 
 @Component({
   selector: 'app-tags',
@@ -43,7 +44,7 @@ export class TagsComponent implements OnInit {
       this.tags = data;
     }, (res) => {
       console.log('error list tags', res.error);
-      this.req_error_modal = res.error.error + ' - ' + res.error.message; 
+      this.req_error_table = res.error.error + ' - ' + res.error.message; 
     })
 }
 
@@ -111,6 +112,17 @@ export class TagsComponent implements OnInit {
     });
   }
 
+  openmodalChangelogs(content, item: iTag) {
+    // init form
+    this.formTagEdit = this.fb.group({
+      id: [item.id]
+    })
+    
+    // open modal
+    const modalRef = this.modalService.open(content);
+
+  }
+
   openmodalEdit(content, tag: iTag) {
     // init form
     this.formTagEdit = this.fb.group({
@@ -130,6 +142,36 @@ export class TagsComponent implements OnInit {
     // open modal
     const modalRef = this.modalService.open(content);
     
+  }
+
+  refreshEditForm() {
+    // clear old messages:
+    this.req_error_modal = null; 
+    this.req_loading_modal = true;
+    this.formTagEdit.disable();
+
+    // load user 
+    this.doorlockdApiClient.getById(iObjType.tags, this.formTagEdit.value.id).subscribe((item:iTag)=>{
+      console.log("refresh user....",item);
+
+      // reset all write-only items:
+      this.formTagEdit.reset();
+      // for all items in item:
+      for (let key in item) {
+        this.formTagEdit.get(key).setValue(item[key]);
+      }
+
+      this.req_loading_modal = false;
+      this.formTagEdit.enable();
+
+     }, (res) => {
+        console.log('error update tag', res.error);
+        this.formTagEdit.enable();
+        this.req_loading_modal = false;
+        this.req_error_modal = res.error.error + ' - ' + res.error.message; 
+  
+    })
+
   }
 
   submitTagUpdate() {

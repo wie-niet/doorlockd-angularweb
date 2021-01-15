@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
       console.log('Auth login!');
       console.log('redirect will do url:', this.redirectUrl);
     },(res) => {
-      console.log('catched error', res.error);
+      console.log('catched error', res, res.error);
       this.req_loading = false;
       this.req_error = res.error.error + ' - ' + res.error.message; 
       this.loginForm.enable();

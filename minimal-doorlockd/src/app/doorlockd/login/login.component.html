@@ -12,14 +12,14 @@
             <input disabled [hidden]="!doorlockdApiClient.loggedIn" value="*******">
 
         </div>
-        <div [hidden]="!req_loading" class="alert alert-dark" role="alert">Loading... please wait {{req_loading}}</div>
+        <div [hidden]="!req_loading" class="alert alert-dark" role="alert">Loading... please wait</div>
         <div [hidden]="!req_error" class="alert alert-warning" role="alert">Error: {{req_error}}</div>
         <button [disabled]="doorlockdApiClient.loggedIn" type="submit">login</button>
         <button [disabled]="!doorlockdApiClient.loggedIn" (click)="submitLogout()" >logout</button>
 
     </form>
 </div>
-
+<!-- 
 <div >
     <label>remember me</label>
     <input type="checkbox" [(ngModel)]="doorlockdApiClient.remember_me" >
@@ -34,4 +34,4 @@ doorlockdApiClient.tokenInfo: {{ doorlockdApiClient.tokenInfo |json }}
 doorlockdApiClient.loggedIn: {{ doorlockdApiClient.loggedIn }}
 doorlockdApiClient.loggedInUsername: {{ doorlockdApiClient.loggedInUsername }}
 
-</pre>
+</pre> -->

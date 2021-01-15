@@ -1,4 +1,3 @@
-
 #
 # angular frondend doorlockd
 #
@@ -45,10 +44,12 @@ ng generate component doorlockd/login
 [x] hele pagina in angular component (zodat login en navigatie met data bindings werken.)
 [?] fix login refresh token.
 [x] login drop down menu (user name | login | logout | debug component ?) 
-[ ] fix whitelist / blacklist api url  in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts'
+[.] fix whitelist / blacklist api url in 'minimal-doorlockd/src/app/doorlockd/doorlockd.module.ts' ( same url seems to work anyway)
+
 [x] readonly id value in forms (this.registerForm.getRawValue()  ) 
-[ ] changelog viewer. [component -> user,tag ] <changelog model="user" id="1"></changelog>???
-[ ] loading message. / error message.
+[x] changelog viewer. [component -> user,tag ] <changelog model="user" id="1"></changelog>???
+[ ] <hardware_item></hardware_item> 
+[x] loading message. / error message.
 	- tags: table, modal new , modal edit, delete 
 	- unkown tags: table, create , delete
 	- users ....
@@ -58,7 +59,7 @@ ng generate component doorlockd/login
 #
 [x] route back to /users/ (or redirect back to current view) after editing self (/users/:uid ).
 [x] username (e-mail) forms longer ...!
-[ ] bug: detect api disconnected. (maybe due to refresh page)
+[?] bug: detect api disconnected. (maybe due to refresh page) [ server time issue ]
 #
 # Todo: later
 #

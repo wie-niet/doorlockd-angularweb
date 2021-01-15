@@ -17,10 +17,27 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DebugViewerComponent } from './debug-viewer/debug-viewer.component';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { ChangelogsComponent } from './changelogs/changelogs.component';
+import { HardwareItemComponent } from './hardware-item/hardware-item.component';
+
+
+// debug:
+let jwtconf = { config: {
+    tokenGetter: function  tokenGetter() {
+          console.log('jwt get token');
+         return     localStorage.getItem('access_token');
+      },
+    
+    whitelistedDomains: [document.location.host, '192.168.7.2:8000', 'localhost:800', '192.168.6.2:8000'],
+    blacklistedRoutes: ['/html/']
+    }
+  };
+
+console.log( "debug JWT: ", jwtconf);
 
 
 @NgModule({
-  declarations: [UsersComponent, TagsComponent, UnknowntagsComponent, HardwareComponent, LoginComponent, DashboardComponent, DebugViewerComponent],
+  declarations: [UsersComponent, TagsComponent, UnknowntagsComponent, HardwareComponent, LoginComponent, DashboardComponent, DebugViewerComponent, ChangelogsComponent, HardwareItemComponent],
   imports: [
     CommonModule,
     DoorlockdRoutingModule,
@@ -31,9 +48,11 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     JwtModule.forRoot({
       config: {
         tokenGetter: function  tokenGetter() {
-             return     localStorage.getItem('access_token');},
-        whitelistedDomains: ['192.168.7.2:8000'],
-        blacklistedRoutes: ['http://192.168.7.2:8000/html/']
+             return     localStorage.getItem('access_token');
+          },
+        
+        whitelistedDomains: [document.location.host, '192.168.7.2:8000', 'localhost:800', '192.168.6.2:8000'],
+        blacklistedRoutes: ['/html/']
       }
     })
   ]

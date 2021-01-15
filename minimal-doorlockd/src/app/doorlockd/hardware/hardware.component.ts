@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DoorlockdApiClientService } from '../doorlockd-api-client.service';
 import { iHardwareItem } from '../interfaces';
 import { NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
+import { HardwareItemComponent } from '../hardware-item/hardware-item.component';
 
 @Component({
   selector: 'app-hardware',

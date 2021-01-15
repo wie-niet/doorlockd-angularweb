@@ -1,12 +1,22 @@
-<p></p>
+<h2>Hardware</h2>
+<p>Warning: this section is still beta</p>
 
+<app-hardware-item hw_name="solenoid" status_toggle="on" ></app-hardware-item> 
 
+<app-hardware-item hw_name="buzzer" status_toggle="on" ></app-hardware-item> 
+
+<app-hardware-item hw_name="rfidreader" ></app-hardware-item> 
+
+<app-hardware-item hw_name="buzzer" ></app-hardware-item> 
+
+<!-- for loop:
 <div *ngFor="let hw_item of hw">
    <span>{{hw_item[0]}}</span>: <button (click)="updateStatus(hw_item, !hw_item[1].status)">{{hw_item[1].status}}</button>
    <code> {{ hw_item[1] | json }}</code> 
-    
-</div>
+</div> -->
 
-<pre>
+<!-- <pre>
     {{ hw | json }}
 </pre>
+ -->
+

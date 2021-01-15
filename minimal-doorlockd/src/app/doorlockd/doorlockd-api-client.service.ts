@@ -19,32 +19,61 @@ export class DoorlockdApiClientService {
   public loggedInUid = null;
   private tokenRefreshEvent = null;
 
+  public offset_sec_servertime = 0;
+
+  // public apiServer = "http://localhost:800/api";
   // public apiServer = "http://192.168.7.2:8000/api";
   public apiServer = "/api";
 
-  httpOptions = {
+  public httpOptions = {
     // observe: 'response',
     headers: new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     })
-    }
+  }
   
   
   constructor(private httpClient: HttpClient) {
     // restoring runtime variables and token_refresh events
     if (this.loggedIn) {
       console.log('welcome back', this);
+      
+      // read offset_sec_servertime from storage
+      this.offset_sec_servertime = +localStorage.getItem('offset_sec_servertime');
+
+      // restart schedule Refresher:
       this.scheduleRefreshEvent();
       this.getLoggedInUsername();  
     }
    }
   
+    get access_token() {
+      // gettter for JWT token
+      return localStorage.getItem('access_token');
+    }
+    set access_token(token) {
+      // settter for JWT token
+      if (token !== null) {
+        // update/set Authorization header 
+        localStorage.setItem('access_token', token);
+        // calculate servertime offset in seconds:
+        let decodedToken = this.jwt_helper.decodeToken(token);
+        let offset_sec = decodedToken.iat - Math.floor(Date.now() / 1000);
+        localStorage.setItem('offset_sec_servertime',  offset_sec.toString()) ;
+        this.offset_sec_servertime = offset_sec
+      } else {
+        // remove Authorization header 
+        localStorage.removeItem('access_token');
+      }
+    }
+
     login(email_password, schedule_refresh=true) {
       // email:string, password:string
       return this.httpClient.post<AuthResp>(this.apiServer + '/login/', JSON.stringify(email_password), this.httpOptions)
       .pipe(tap(res => {
         if (res.status) {
-          localStorage.setItem('access_token', res.token);
+          // localStorage.setItem('access_token', res.token);
+          this.access_token = res.token;
           this.scheduleRefreshEvent(schedule_refresh);
           this.getLoggedInUsername(email_password.email);
 
@@ -64,11 +93,14 @@ export class DoorlockdApiClientService {
       }
 
       /* schedul an timeout event to request a new token */
-      let access_token:string = localStorage.getItem('access_token');
+      let access_token:string = this.access_token;
       let decodedToken = this.jwt_helper.decodeToken(access_token);
 
       // schedule 60 seconds before exp date - issue date 
-      let s = decodedToken.exp - decodedToken.iat - 60;
+      // let s = decodedToken.exp - decodedToken.iat - 60;
+      let offset:number  = +localStorage.getItem('offset_sec_servertime');
+      let s = decodedToken.exp - Math.floor(Date.now() / 1000) - offset;
+      // include server time offset:
 
       console.log('schedule refresh in secs:', s);
 
@@ -86,13 +118,15 @@ export class DoorlockdApiClientService {
       .pipe(tap(res => {
         if (res.status) {
 
-          localStorage.setItem('access_token', res.token);
+          // localStorage.setItem('access_token', res.token);
+          this.access_token = res.token;
           this.scheduleRefreshEvent(schedule_refresh);
           this.getLoggedInUsername(null, true); // force refresh
         } else {
           console.log("Something went wrong with refreshing token, you will be logged out!")
           this.errorHandler(res);
-          localStorage.removeItem('access_token');
+          // localStorage.removeItem('access_token');
+          this.access_token = null;
         }
 
       }))
@@ -103,16 +137,24 @@ export class DoorlockdApiClientService {
 
       // cancel refresh token event
       clearTimeout(this.tokenRefreshEvent);
+
+      // clear server time offset warning:
+      this.offset_sec_servertime = 0;
+
     }
         
     public get loggedIn(): boolean{
-      let access_token:string = localStorage.getItem('access_token');
+      let access_token:string = this.access_token;
 
       if(access_token == null) {
         return false;
       }
 
-      return !this.jwt_helper.isTokenExpired(access_token);
+      // // disabled when server time is out of sync/ timeerror
+      // return !this.jwt_helper.isTokenExpired(access_token);
+      let offset_sec:number = + localStorage.getItem('offset_sec_servertime');
+
+      return !this.jwt_helper.isTokenExpired(access_token, offset_sec);
     }
     
     getLoggedInUsername(setuser = null, force_refresh=false) {
@@ -223,7 +265,8 @@ export class DoorlockdApiClientService {
     }
 
     getAll(objType:iObjType): Observable<iTag|iUser|iUnknownTag[]> {
-      return this.httpClient.get<iTag|iUser|iUnknownTag[]>(this.apiServer +'/'+ objType +'/')
+      console.log("this.httpOptions: ", this.httpOptions);
+      return this.httpClient.get<iTag|iUser|iUnknownTag[]>(this.apiServer +'/'+ objType +'/', this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
       )
@@ -290,13 +333,13 @@ export class DoorlockdApiClientService {
         // if validation error:
         else if (error.error.type == "validation") {
           console.log("Validation error: " + error.error.message);
-          window.alert("Validation error,\n" + error.error.message);
+          // window.alert("Validation error,\n" + error.error.message);
           return throwError(error);
         }          
         // if access denied error:
         else if (error.error.error == "access denied") {
           console.log("Access Denied: " + error.error.message);
-          window.alert("Access Denied:,\n" + error.error.message);
+          // window.alert("Access Denied:,\n" + error.error.message);
         }          
          // if something is wrong with our auth token:
         else if (error.error.error == "token error") {
@@ -309,8 +352,8 @@ export class DoorlockdApiClientService {
         } else {
           window.alert("Some error,\n" + errorMessage);
           // 
-          return throwError(error);
         }
+        return throwError(error);
 
 
        }

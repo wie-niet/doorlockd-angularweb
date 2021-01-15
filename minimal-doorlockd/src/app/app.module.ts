@@ -7,9 +7,12 @@ import { AppComponent } from './app.component';
 import { DoorlockdModule } from './doorlockd/doorlockd.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 
+import { DurationFormatPipe } from './duration-format.pipe';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DurationFormatPipe
   ],
   imports: [
     BrowserModule,

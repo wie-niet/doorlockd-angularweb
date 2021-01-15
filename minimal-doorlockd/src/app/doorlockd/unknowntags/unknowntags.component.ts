@@ -44,7 +44,7 @@ export class UnknowntagsComponent implements OnInit {
       this.unknowntags = data;
     }, (res) => {
       console.log('error list', res.error);
-      this.req_error_modal = res.error.error + ' - ' + res.error.message; 
+      this.req_error_table = res.error.error + ' - ' + res.error.message; 
     })
 
   }
