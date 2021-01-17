@@ -70,7 +70,7 @@ export class UsersComponent implements OnInit {
   formUserNew: FormGroup = this.fb.group({
     email: [''],
     password_plain: [''],
-    is_disabled: [false],
+    is_enabled: [true],
   })
 
   formUserEdit: FormGroup = this.fb.group({
@@ -78,7 +78,7 @@ export class UsersComponent implements OnInit {
     email: [''],
     password_plain: [''],
     password_hash: [''],
-    is_disabled: [false],
+    is_enabled: [true],
     created_at: [''],
     updated_at: [''],
   })
@@ -115,6 +115,9 @@ export class UsersComponent implements OnInit {
       console.log(data);
       this.req_loading_table = false;
       this.users = data;
+      //  sort table:
+      this.users.sort((a,b) => a.email.localeCompare(b.email));
+
     }, (res) => {
       console.log('error list users', res.error);
       this.req_error_table = res.error.error + ' - ' + res.error.message; 
@@ -126,7 +129,7 @@ export class UsersComponent implements OnInit {
     this.formUserNew = this.fb.group({
       email: [''],
       password_plain: [''],
-      is_disabled: [false],
+      is_enabled: [false],
     })
     
     // clear old messages:
@@ -179,7 +182,7 @@ export class UsersComponent implements OnInit {
       email: [user.email],
       password_plain: [user.password_plain],
       password_hash: [user.password_hash],
-      is_disabled: [user.is_disabled],
+      is_enabled: [user.is_enabled],
       created_at: [user.created_at],
       updated_at: [user.updated_at],
     })

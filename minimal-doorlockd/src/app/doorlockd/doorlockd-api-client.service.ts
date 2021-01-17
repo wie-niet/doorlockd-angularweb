@@ -21,9 +21,9 @@ export class DoorlockdApiClientService {
 
   public offset_sec_servertime = 0;
 
-  // public apiServer = "http://localhost:800/api";
-  // public apiServer = "http://192.168.7.2:8000/api";
-  public apiServer = "/api";
+  // public apiServer = "http://localhost:8000/api";
+  public apiServer = "http://192.168.7.2:8000/api";
+  // public apiServer = "/api";
 
   public httpOptions = {
     // observe: 'response',

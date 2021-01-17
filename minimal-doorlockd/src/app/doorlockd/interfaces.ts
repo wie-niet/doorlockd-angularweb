@@ -13,7 +13,7 @@ export interface iTag {
 	id: number;
     hwid: string;
     description: string;
-    is_disabled: boolean;
+    is_enabled: boolean;
     created_at: string;
     updated_at: string;
 }
@@ -23,7 +23,7 @@ export interface iUser {
     email: string;
     password_hash?: string;
     password_plain?: string;
-    is_disabled: boolean;
+    is_enabled: boolean;
     created_at: string;
     updated_at: string;
 }

@@ -99,7 +99,7 @@ export class UnknowntagsComponent implements OnInit {
       // disable hwid form when hwid is set in argument
       hwid: new FormControl({value: hwid, disabled:  hwid == '' ? false : true }),
       description: [''],
-      is_disabled: [false],
+      is_enabled: [true],
     }) 
     
     // clear old messages:

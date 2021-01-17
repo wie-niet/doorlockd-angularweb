@@ -17,7 +17,7 @@
             <th>#</th>
             <th>Hardware ID</th>
             <th>Description</th>
-            <th>Disabled</th>
+            <th>Enabled</th>
             <th>Created</th>                            
             <th>Updated</th>
             <th>Actions</th>
@@ -28,7 +28,7 @@
         <td>{{tag.id}}</td>
         <td>{{tag.hwid}}</td>
         <td>{{tag.description}}</td>
-        <td><input type="checkbox" [checked]=tag.is_disabled disabled> </td>
+        <td><input type="checkbox" [checked]=tag.is_enabled disabled> </td>
         <td>{{tag.created_at | date:'short' }}</td>
         <td>{{tag.updated_at | date:'short' }}</td>
         
@@ -99,10 +99,10 @@
               </div>
               <div class="row form-group">
                   <div class="col">
-                      <label for="is_disabled">Disabled</label>
+                      <label for="is_enabled">Enabled</label>
                   </div>
                   <div class="col">
-                      <input type="checkbox" id="is_disabled" formControlName="is_disabled" class="form-control">
+                      <input type="checkbox" id="is_enabled" formControlName="is_enabled" class="form-control">
                   </div>
               </div>
         </div>
@@ -167,10 +167,10 @@
             </div>
             <div class="row form-group">
                 <div class="col">
-                    <label for="is_disabled">Disabled</label>
+                    <label for="is_enabled">Enabled</label>
                 </div>
                 <div class="col">
-                    <input type="checkbox" id="is_disabled" formControlName="is_disabled" class="form-control">
+                    <input type="checkbox" id="is_enabled" formControlName="is_enabled" class="form-control">
                 </div>
             </div>
         </div>

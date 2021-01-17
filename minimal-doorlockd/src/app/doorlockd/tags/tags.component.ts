@@ -42,6 +42,9 @@ export class TagsComponent implements OnInit {
       console.log(data);
       this.req_loading_table = false;
       this.tags = data;
+      //  sort table:
+      this.tags.sort((a,b) => a['description'].localeCompare(b['description']));
+
     }, (res) => {
       console.log('error list tags', res.error);
       this.req_error_table = res.error.error + ' - ' + res.error.message; 
@@ -78,7 +81,7 @@ export class TagsComponent implements OnInit {
       // disable hwid form when hwid is set in argument
       hwid: new FormControl({value: hwid, disabled:  hwid == '' ? false : true }),
       description: [''],
-      is_disabled: [false],
+      is_enabled: [true],
     }) 
     
     // clear old messages:
@@ -130,7 +133,7 @@ export class TagsComponent implements OnInit {
       id: [tag.id],
       hwid: [tag.hwid],
       description: [tag.description],
-      is_disabled: [tag.is_disabled],
+      is_enabled: [tag.is_enabled],
       created_at: [tag.created_at],
       updated_at: [tag.updated_at],
     })
