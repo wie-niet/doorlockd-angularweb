@@ -1,0 +1,39 @@
+<h1>Debug Viewer</h1>
+
+
+<h2>Api info:</h2><pre>
+doorlockdApiClient.apiServer: {{ doorlockdApiClient.apiServer }}
+doorlockdApiClient.offset_sec_servertime: {{ doorlockdApiClient.offset_sec_servertime }}
+
+doorlockdApiClient.httpOptions: {{ doorlockdApiClient.httpOptions | json }}
+
+<!-- apiServer: <input type="text" [(value)]="doorlockdApiClient.apiServer" > -->
+</pre>
+
+
+
+<h2>Auth Token:</h2>
+
+<button [disabled]="!doorlockdApiClient.loggedIn" (click)="doorlockdApiClient.refresh_token().subscribe()" >refresh token</button>
+<pre>
+doorlockdApiClient.loggedIn: {{ doorlockdApiClient.loggedIn }}
+doorlockdApiClient.loggedInUsername: {{ doorlockdApiClient.loggedInUsername }}
+doorlockdApiClient.loggedInUid: {{ doorlockdApiClient.loggedInUid }}
+doorlockdApiClient.access_token: {{ doorlockdApiClient.access_token }}
+doorlockdApiClient.tokenInfo: {{ doorlockdApiClient.tokenInfo |json }}
+
+
+.......
+doorlockdApiClient.remember_me: {{ doorlockdApiClient.remember_me }}
+doorlockdApiClient.remember_me_name: {{ doorlockdApiClient.remember_me_name }}
+
+</pre>
+
+<!-- <h2>Changelogs test</h2> -->
+<!-- <app-changelogs model="users" id="4" ></app-changelogs> -->
+
+<!-- <div *ngIf="!doorlockdApiClient.loggedIn">...</div> -->
+<div *ngIf="doorlockdApiClient.loggedIn">
+    <h2>Changelogs for {{ doorlockdApiClient.loggedInUsername }}</h2>
+    <app-changelogs model="users" id="{{doorlockdApiClient.loggedInUid}}" ></app-changelogs>
+</div>

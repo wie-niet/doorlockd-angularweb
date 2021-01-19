@@ -1,0 +1,44 @@
+
+<!-- <div *ngIf="!doorlockdApiClient.loggedIn">You need to login first.</div> -->
+<!-- <div *ngIf="doorlockdApiClient.loggedIn" >
+    ...
+</div> -->
+
+
+<h3>{{hw_name}}</h3>
+
+control:
+<button (click)="updateStatus()" [disabled]="hw_item.status" [hidden]="!status_toggle">
+    <span [hidden]="!hw_item.status">{{ value_true }}</span>
+    <span [hidden]="hw_item.status">{{ value_false }}</span>
+</button>
+
+<button (click)="updateStatus(true)" [disabled]="hw_item.status" [hidden]="status_toggle">{{ value_true }}</button>
+<button (click)="updateStatus(false)" [disabled]="!hw_item.status" [hidden]="status_toggle">{{ value_false }}</button>
+
+;<br>
+
+status: {{hw_item.status ? "on" : "off" }} {{ loading}};
+<button (click)="getHw()" [disabled]="false" [hidden]="loading" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+  </svg><span class="sr-only"> refresh </span>
+</button>
+<button disabled [hidden]="!loading" >
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <span class="sr-only">Loading...</span>
+</button>
+<br>
+
+<!-- test: toggleStatus
+<button (click)="toggleStatus(hw_name, status)" [disabled]="status.status" [hidden]="!status_toggle" >
+    <span [hidden]="!status.status"> OPEN </span>
+    <span [hidden]="status.status">GESLOTEN</span>
+</button> -->
+
+
+
+json:
+<code> {{ hw_item | json }}</code>  
+;<br>
+

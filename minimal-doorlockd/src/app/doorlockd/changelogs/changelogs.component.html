@@ -1,0 +1,28 @@
+<!-- changelog -->
+<table class="table-nowrap" >
+    <thead>
+    <th>action</th>
+    <th>date</th>
+    <th>user.id</th>
+    <th>attribute</th>
+    <th>value</th>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let changelog of changelogs">
+        <ng-template #tooltip ><pre style="text-align: left; color:azure;">{{changelog | json }}</pre></ng-template>
+        <tr *ngFor="let diff of changelog.diff" [ngbTooltip]="tooltip" >
+
+        <td><code>{{changelog.action}}</code></td>
+        <td><code>{{changelog.now | date:'short'}}</code></td>
+        <td><code>user({{changelog.user_id}})</code></td>
+        <td><code>{{diff.path}}</code></td>
+        <td><code>{{ (diff.value.length>20)? (diff.value | slice:0:20)+'..':(diff.value) }}</code></td>
+        </tr>    
+    </ng-container>
+    </tbody>
+</table>
+<!-- loading and error messages: -->
+<div [hidden]="!req_loading_changelogs" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
+<div [hidden]="!req_error_changelogs" class="alert alert-warning nooverlay-message" role="alert">{{req_error_changelogs}}</div>
+
+<!-- <pre>{{ changelogs |json }}</pre> -->
