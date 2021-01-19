@@ -1,0 +1,49 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" style="visibility: hidden">
+
+    <!-- 
+     #
+     #	all content is made hidden here..., login modal is outside main tag. 
+     #	
+    -->
+   
+      
+    </main>
+    
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLoginForm">
+        Launch demo modal
+      </button>
+
+    <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLoginForm">
+      Launch demo modal
+    </button> -->
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="modalLoginForm" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form [formGroup]="loginForm" (ngSubmit)="submitForm()" novalidate class="form-login">
+                <img class="mb-4" src="assets/img/doorlockd.png" alt="" width="72" height="72">
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <label for="inputEmail" class="sr-only">Email address</label>
+                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <div class="checkbox mb-3">
+                  <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                  </label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    <script>
+        $('#modalLoginForm').modal('show');
+    </script>
