@@ -8,4 +8,4 @@ make new
 
 </pre>
 
-this will create static_html.tgz which you can easily unpack in /static_html inside doorlockd
+this will create static_html.tgz which you can easily unpack in /static_html inside doorlockd deamon
