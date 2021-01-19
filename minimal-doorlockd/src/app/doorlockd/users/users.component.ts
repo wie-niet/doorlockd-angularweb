@@ -23,6 +23,10 @@ export class UsersComponent implements OnInit {
   req_loading_modal = false;
   req_error_modal = null;
 
+  // sort table:
+  order: string = '';
+
+
   editNavId = 1; // edit user tab
   
   redirectUrl: string | null = null; // redirect url for edit mode 
@@ -65,12 +69,49 @@ export class UsersComponent implements OnInit {
     
   }
 
+  sortTable(col: string, asc: boolean|null = null) {
+    // show loading/bussy message
+    this.req_loading_table = true;
 
+    if(asc === null) {
+      // determin direction from current this.order
+      if(this.order == col) {
+        asc = false // let's reverse
+      } else {
+        asc = true; 
+      }
+    }
+
+    if(this.users.length > 1) {
+      if(typeof this.users[0][col] === 'string' ) {
+        // this.tags.sort((a,b) => a['description'].localeCompare(b['description']));
+        if(asc) {
+          this.users.sort((a,b) => a[col].localeCompare(b[col]));
+        } else {
+          this.users.sort((b,a) => a[col].localeCompare(b[col]));
+        }
+      } else {
+        // numeric/logic sort:
+        if(asc) {
+          this.users.sort((a, b) => ((a[col] < b[col] ? -1 : 1)))
+        } else {
+          this.users.sort((b, a) => ((a[col] < b[col] ? -1 : 1)))
+        }
+      }
+    }
+
+    // compose order variable for UI.
+    this.order = (asc ? '':'!') + col;
+    // console.log('order: ' + this.order);
+
+    // hide loading/bussy message
+    this.req_loading_table = false;
+  }
 
   formUserNew: FormGroup = this.fb.group({
     email: [''],
     password_plain: [''],
-    is_enabled: [true],
+    is_enabled: [''],
   })
 
   formUserEdit: FormGroup = this.fb.group({
@@ -78,7 +119,7 @@ export class UsersComponent implements OnInit {
     email: [''],
     password_plain: [''],
     password_hash: [''],
-    is_enabled: [true],
+    is_enabled: [''],
     created_at: [''],
     updated_at: [''],
   })
@@ -116,7 +157,7 @@ export class UsersComponent implements OnInit {
       this.req_loading_table = false;
       this.users = data;
       //  sort table:
-      this.users.sort((a,b) => a.email.localeCompare(b.email));
+      this.sortTable('email');
 
     }, (res) => {
       console.log('error list users', res.error);
@@ -125,11 +166,11 @@ export class UsersComponent implements OnInit {
   }
 
   openModalTagNew(content) {
-    // clear object
+    // clear object , set defaults
     this.formUserNew = this.fb.group({
       email: [''],
       password_plain: [''],
-      is_enabled: [false],
+      is_enabled: [true],
     })
     
     // clear old messages:

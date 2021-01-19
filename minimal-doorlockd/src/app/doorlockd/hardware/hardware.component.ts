@@ -20,9 +20,11 @@ export class HardwareComponent implements OnInit {
   constructor(public doorlockdApiClient: DoorlockdApiClientService) { }
 
   ngOnInit(): void {
-    this.getHw('solenoid');
-    this.getHw('buzzer');
-    this.getHw('rfidreader');
+    if(this.doorlockdApiClient.loggedIn) {
+      this.getHw('solenoid');
+      this.getHw('buzzer');
+      this.getHw('rfidreader');  
+    }
   }
 
   getHw(name): void {

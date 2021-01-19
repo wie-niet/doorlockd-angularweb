@@ -7,7 +7,7 @@ import { catchError,tap, timeout } from 'rxjs/operators';
 import { iTag,iUser,iUnknownTag,iObjType, iChangelog, AuthResp,iHardwareItem } from './interfaces';
 
 import { JwtHelperService } from "@auth0/angular-jwt";
-import { NullTemplateVisitor } from '@angular/compiler';
+import { analyzeFileForInjectables, NullTemplateVisitor } from '@angular/compiler';
 
 
 @Injectable({
@@ -22,8 +22,8 @@ export class DoorlockdApiClientService {
   public offset_sec_servertime = 0;
 
   // public apiServer = "http://localhost:8000/api";
-  public apiServer = "http://192.168.7.2:8000/api";
-  // public apiServer = "/api";
+  // public apiServer = "http://192.168.7.2:8000/api";
+  public apiServer = "/api";
 
   public httpOptions = {
     // observe: 'response',
@@ -82,8 +82,8 @@ export class DoorlockdApiClientService {
           console.log("Something went wrong", res)
           return throwError(res);
         }
-        
       }))
+
     }
     scheduleRefreshEvent(schedule_refresh=true) {
       if (!schedule_refresh) {
@@ -99,7 +99,7 @@ export class DoorlockdApiClientService {
       // schedule 60 seconds before exp date - issue date 
       // let s = decodedToken.exp - decodedToken.iat - 60;
       let offset:number  = +localStorage.getItem('offset_sec_servertime');
-      let s = decodedToken.exp - Math.floor(Date.now() / 1000) - offset;
+      let s = decodedToken.exp - Math.floor(Date.now() / 1000) - offset - 60; // 60sec before exp.
       // include server time offset:
 
       console.log('schedule refresh in secs:', s);
@@ -140,6 +140,7 @@ export class DoorlockdApiClientService {
 
       // clear server time offset warning:
       this.offset_sec_servertime = 0;
+      localStorage.removeItem('offset_sec_servertime');
 
     }
         
@@ -154,7 +155,23 @@ export class DoorlockdApiClientService {
       // return !this.jwt_helper.isTokenExpired(access_token);
       let offset_sec:number = + localStorage.getItem('offset_sec_servertime');
 
-      return !this.jwt_helper.isTokenExpired(access_token, offset_sec);
+
+      try {
+        // catch malformed + expired tokens
+        if (this.jwt_helper.isTokenExpired(access_token, offset_sec)) {
+          throw new Error('token expired')
+        } else {
+          // logged on ok:
+          return(true)
+        }
+      } catch (error) {
+        console.log('access_token:' + error)
+
+        // time to cleanup the token and other info
+        this.logout()
+        // is not loggedIn
+        return(false)
+      }
     }
     
     getLoggedInUsername(setuser = null, force_refresh=false) {
@@ -312,6 +329,8 @@ export class DoorlockdApiClientService {
     }
 
     errorHandler(error) {
+      console.log('errorHandler: ' + error);
+
        let errorMessage = '';
        if(error.error instanceof ErrorEvent) {
          // Get client-side error
@@ -348,6 +367,8 @@ export class DoorlockdApiClientService {
           // loggin out
           let doorlockClientService = new DoorlockdApiClientService(null);
           doorlockClientService.logout();
+          // quick fix when above doesn't work
+          localStorage.removeItem('access_token');
 
         } else {
           window.alert("Some error,\n" + errorMessage);

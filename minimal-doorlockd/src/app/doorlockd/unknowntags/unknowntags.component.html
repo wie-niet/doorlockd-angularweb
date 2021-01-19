@@ -12,50 +12,63 @@
           </div>
 
     <table class="table table-striped table-sm table-nowrap" [class.overlay-blanket]="req_loading_table">
-        <thead>
-          <tr>
-              <th>#</th>
-              <th>Hardware ID</th>
-              <th>First seen</th>                            
-              <th>Last seen</th>
-              <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let tag of unknowntags">
-            <td>{{tag.id}}</td>
-            <td>{{tag.hwid}}</td>
-            <td>{{tag.created_at | date:'short' }}</td>
-            <td>{{tag.updated_at | date:'short' }}</td>
-            
-            <td>
-              <div class="btn-group" role="group" aria-label="user control">
-                  <button class="btn btn-sm py-0" type="button" (click)="openModalTagNew(modalTagNew, tag.hwid)" data-toggle="tooltip" data-placement="bottom" title="Add new tag"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                  </svg></button>
-                  <button class="btn btn-sm py-0" type="button" (click)="formDelete( tag.id)" data-toggle="tooltip" data-placement="bottom" title="Delete this unknowntag"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                  </svg></button>
-              </div>
-          </td>
-
+      <thead>
+        <tr>
+          <!-- column headers , with sorting features -->
+          <th *ngFor="let c of [
+          {id:'id',name:'#'},
+          {id:'hwid',name:'Hardware ID'},
+          {id:'created_at',name:'First seen'},
+          {id:'updated_at',name:'Last seen'}
+          ]">
+            <span role="button" (click)="sortTable(c.id)">{{c.name}} 
+              <span *ngIf="order==c.id"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+              </svg></span>
+              <span *ngIf="order=='!'+c.id"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+              </svg></span>
+            </span>
+          </th>
+          <th>Actions</th>
         </tr>
-    
-          <tr *ngIf="!unknowntags.length">
-            <th colspan="7">nothing to display.</th>
-          </tr>
+      </thead>
 
-        </tbody>
-      </table>
+    <tbody>
+    <tr *ngFor="let tag of unknowntags">
+        <td>{{tag.id}}</td>
+        <td>{{tag.hwid}}</td>
+        <td>{{tag.created_at | date:'short' }}</td>
+        <td>{{tag.updated_at | date:'short' }}</td>
+        
+        <td>
+          <div class="btn-group" role="group" aria-label="user control">
+              <button class="btn btn-sm py-0" type="button" (click)="openModalTagNew(modalTagNew, tag.hwid)" data-toggle="tooltip" data-placement="bottom" title="Add new tag"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              </svg></button>
+              <button class="btn btn-sm py-0" type="button" (click)="formDelete( tag.id)" data-toggle="tooltip" data-placement="bottom" title="Delete this unknowntag"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg></button>
+          </div>
+      </td>
 
-      <!-- loading and error messages: -->
-      <div [hidden]="!req_loading_table" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
-      <div [hidden]="!req_error_table" class="alert alert-warning overlay-message" role="alert">{{req_error_table}}</div>
+    </tr>
 
-    </div>
-    
+      <tr *ngIf="!unknowntags.length">
+        <th colspan="7">nothing to display.</th>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- loading and error messages: -->
+  <div [hidden]="!req_loading_table" class="alert alert-dark overlay-message" role="alert">Loading... please wait</div>
+  <div [hidden]="!req_error_table" class="alert alert-warning overlay-message" role="alert">{{req_error_table}}</div>
+
+  </div>
+  
   
 
 <!-- TEMPLATE NEW MODAL  BEGIN -->

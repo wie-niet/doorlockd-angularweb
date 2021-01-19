@@ -22,6 +22,9 @@ export class TagsComponent implements OnInit {
   req_loading_modal = false;
   req_error_modal = null;
 
+  // sort table:
+  order: string = '';
+
   constructor(
     public fb: FormBuilder,
     private modalService: NgbModal,
@@ -33,6 +36,45 @@ export class TagsComponent implements OnInit {
     }
   }
 
+  sortTable(col: string, asc: boolean|null = null) {
+    // show loading/bussy message
+    this.req_loading_table = true;
+
+    if(asc === null) {
+      // determin direction from current this.order
+      if(this.order == col) {
+        asc = false // let's reverse
+      } else {
+        asc = true; 
+      }
+    }
+
+    if(this.tags.length > 1) {
+      if(typeof this.tags[0][col] === 'string' ) {
+        // this.tags.sort((a,b) => a['description'].localeCompare(b['description']));
+        if(asc) {
+          this.tags.sort((a,b) => a[col].localeCompare(b[col]));
+        } else {
+          this.tags.sort((b,a) => a[col].localeCompare(b[col]));
+        }
+      } else {
+        // numeric/logic sort:
+        if(asc) {
+          this.tags.sort((a, b) => ((a[col] < b[col] ? -1 : 1)))
+        } else {
+          this.tags.sort((b, a) => ((a[col] < b[col] ? -1 : 1)))
+        }
+      }
+    }
+
+    // compose order variable for UI.
+    this.order = (asc ? '':'!') + col;
+    // console.log('order: ' + this.order);
+
+    // hide loading/bussy message
+    this.req_loading_table = false;
+  }
+
   formRefresh() {
     // refresh table
     this.req_loading_table = true;
@@ -40,11 +82,11 @@ export class TagsComponent implements OnInit {
 
     this.doorlockdApiClient.getAll(iObjType.tags).subscribe((data: iTag[])=>{
       console.log(data);
-      this.req_loading_table = false;
       this.tags = data;
-      //  sort table:
-      this.tags.sort((a,b) => a['description'].localeCompare(b['description']));
 
+      this.sortTable('description', true);
+      
+      this.req_loading_table = false;
     }, (res) => {
       console.log('error list tags', res.error);
       this.req_error_table = res.error.error + ' - ' + res.error.message; 

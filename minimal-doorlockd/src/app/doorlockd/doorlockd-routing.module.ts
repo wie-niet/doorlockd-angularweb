@@ -18,7 +18,9 @@ const routes: Routes = [
   { path: 'doorlock/tags', component: TagsComponent },
   { path: 'doorlock/unknowntags', component: UnknowntagsComponent },
   { path: 'doorlock/hardware', component: HardwareComponent },
-  { path: 'doorlock/debug-viewer', component: DebugViewerComponent }
+  { path: 'doorlock/debug-viewer', component: DebugViewerComponent },
+  { path: '**', redirectTo: 'doorlock/' }  // Wildcard route for a 404 page
+  // { path: '**', component: DashboardComponent }  // Wildcard route for a 404 page
 ];
 
 @NgModule({

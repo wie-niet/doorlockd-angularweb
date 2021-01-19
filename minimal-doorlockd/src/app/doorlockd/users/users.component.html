@@ -12,20 +12,32 @@
 
     <table class="table table-striped table-sm table-nowrap" [class.overlay-blanket]="req_loading_table">
     <thead>
-        <tr>
-            <th>#</th>
-            <th>e-mail</th>
-            <th>Enabled</th>
-            <th>Created</th>                            
-            <th>Updated</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+      <tr>
+        <!-- column headers , with sorting features -->
+        <th *ngFor="let c of [
+        {id:'id',name:'#'},
+        {id:'email',name:'e-mail'},
+        {id:'is_enabled',name:'Enabled'},
+        {id:'created_at',name:'Created'},
+        {id:'updated_at',name:'Updated'}
+        ]">
+          <span role="button" (click)="sortTable(c.id)">{{c.name}} 
+            <span *ngIf="order==c.id"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+            </svg></span>
+            <span *ngIf="order=='!'+c.id"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+            </svg></span>
+          </span>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>  
     <tbody>
       <tr *ngFor="let user of users" (dblclick)="openmodalEdit(modalUsersEdit, user)">
         <td>{{ user.id }}</td>
         <td>{{ user.email}}</td>
-        <td><input type="checkbox" [checked]=user.is_enabled disabled> </td>
+        <td><input type="checkbox" [checked]=user.is_enabled disabled></td>
         <td>{{user.created_at | date:'short' }}</td>
         <td>{{user.updated_at | date:'short' }}</td>
         <td>
@@ -99,7 +111,7 @@
 					<label for="is_enabled">Enabled</label>
 				</div>
 			    <div class="col">
-					<input type="checkbox" id="is_enabled" formControlName="is_enabled" class="form-control">
+            <input type="checkbox" id="is_enabled" formControlName="is_enabled" class="form-control">
 				</div>
 	        </div>
       </div>

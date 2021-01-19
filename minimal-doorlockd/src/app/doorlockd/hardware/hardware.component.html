@@ -1,4 +1,8 @@
-<h2>Hardware</h2>
+
+<div *ngIf="!doorlockdApiClient.loggedIn">You need to login first.</div>
+<div *ngIf="doorlockdApiClient.loggedIn" >
+
+    <h2>Hardware</h2>
 <p>Warning: this section is still beta</p>
 
 <app-hardware-item hw_name="solenoid" status_toggle="on" ></app-hardware-item> 
@@ -19,4 +23,8 @@
     {{ hw | json }}
 </pre>
  -->
+
+
+
+</div>
 
