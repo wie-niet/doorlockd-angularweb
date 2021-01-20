@@ -7,7 +7,8 @@ import { catchError,tap, timeout } from 'rxjs/operators';
 import { iTag,iUser,iUnknownTag,iObjType, iChangelog, AuthResp,iHardwareItem } from './interfaces';
 
 import { JwtHelperService } from "@auth0/angular-jwt";
-import { analyzeFileForInjectables, NullTemplateVisitor } from '@angular/compiler';
+
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -21,9 +22,8 @@ export class DoorlockdApiClientService {
 
   public offset_sec_servertime = 0;
 
-  // public apiServer = "http://localhost:8000/api";
-  // public apiServer = "http://192.168.7.2:8000/api";
-  public apiServer = "/api";
+  // api server path is set in envirement.*.ts files
+  public apiUrl = environment.apiUrl;
 
   public httpOptions = {
     // observe: 'response',
@@ -69,7 +69,7 @@ export class DoorlockdApiClientService {
 
     login(email_password, schedule_refresh=true) {
       // email:string, password:string
-      return this.httpClient.post<AuthResp>(this.apiServer + '/login/', JSON.stringify(email_password), this.httpOptions)
+      return this.httpClient.post<AuthResp>(this.apiUrl + '/login/', JSON.stringify(email_password), this.httpOptions)
       .pipe(tap(res => {
         if (res.status) {
           // localStorage.setItem('access_token', res.token);
@@ -114,7 +114,7 @@ export class DoorlockdApiClientService {
 
     refresh_token(schedule_refresh=true) {
       console.log(' refresh token', schedule_refresh);
-      return this.httpClient.post<AuthResp>(this.apiServer + '/refresh_token/', JSON.stringify({'iets': 'niets'}), this.httpOptions)
+      return this.httpClient.post<AuthResp>(this.apiUrl + '/refresh_token/', JSON.stringify({'iets': 'niets'}), this.httpOptions)
       .pipe(tap(res => {
         if (res.status) {
 
@@ -262,20 +262,20 @@ export class DoorlockdApiClientService {
     }
     
     create(objType:iObjType, item): Observable<iTag|iUser|iUnknownTag> {
-      return this.httpClient.post<iTag|iUser|iUnknownTag>(this.apiServer +'/'+ objType +'/', JSON.stringify(item), this.httpOptions)
+      return this.httpClient.post<iTag|iUser|iUnknownTag>(this.apiUrl +'/'+ objType +'/', JSON.stringify(item), this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
       )
     }  
     getUserById(id): Observable<iUser> {
-      return this.httpClient.get<iUser>(this.apiServer + '/users/' + id)
+      return this.httpClient.get<iUser>(this.apiUrl + '/users/' + id)
       .pipe(
         catchError(this.errorHandler)
       )
     }
 
     getById(objType:iObjType,id): Observable<iTag|iUser|iUnknownTag> {
-      return this.httpClient.get<iTag|iUser|iUnknownTag>(this.apiServer + '/'+ objType +'/' + id)
+      return this.httpClient.get<iTag|iUser|iUnknownTag>(this.apiUrl + '/'+ objType +'/' + id)
       .pipe(
         catchError(this.errorHandler)
       )
@@ -283,21 +283,21 @@ export class DoorlockdApiClientService {
 
     getAll(objType:iObjType): Observable<iTag|iUser|iUnknownTag[]> {
       console.log("this.httpOptions: ", this.httpOptions);
-      return this.httpClient.get<iTag|iUser|iUnknownTag[]>(this.apiServer +'/'+ objType +'/', this.httpOptions)
+      return this.httpClient.get<iTag|iUser|iUnknownTag[]>(this.apiUrl +'/'+ objType +'/', this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
       )
     }
 
     update(objType:iObjType,id, item): Observable<iTag|iUser|iUnknownTag> {
-      return this.httpClient.put<iTag|iUser|iUnknownTag>(this.apiServer +'/'+ objType +'/'+ id, JSON.stringify(item), this.httpOptions)
+      return this.httpClient.put<iTag|iUser|iUnknownTag>(this.apiUrl +'/'+ objType +'/'+ id, JSON.stringify(item), this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
       )
     }
 
     delete(objType:iObjType, id){
-      return this.httpClient.delete<iTag|iUser|iUnknownTag>(this.apiServer +'/'+ objType +'/'+ id, this.httpOptions)
+      return this.httpClient.delete<iTag|iUser|iUnknownTag>(this.apiUrl +'/'+ objType +'/'+ id, this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
         
@@ -305,7 +305,7 @@ export class DoorlockdApiClientService {
     }
 
     getChangelogs(objType:iObjType, id) {
-      return this.httpClient.get<iChangelog[]>(this.apiServer +'/changelogs/'+ objType +'/'+ id +'/') 
+      return this.httpClient.get<iChangelog[]>(this.apiUrl +'/changelogs/'+ objType +'/'+ id +'/') 
       .pipe(
         catchError(this.errorHandler)
       )
@@ -314,7 +314,7 @@ export class DoorlockdApiClientService {
 
     getHwByID(id): Observable<iHardwareItem> {
       let objType = 'hw';
-      return this.httpClient.get<iHardwareItem>(this.apiServer + '/'+ objType +'/' + id)
+      return this.httpClient.get<iHardwareItem>(this.apiUrl + '/'+ objType +'/' + id)
       .pipe(
         catchError(this.errorHandler)
       )
@@ -322,7 +322,7 @@ export class DoorlockdApiClientService {
 
     updateHwByID(id, item): Observable<iHardwareItem> {
       let objType = 'hw';
-      return this.httpClient.put<iHardwareItem>(this.apiServer +'/'+ objType +'/'+ id, JSON.stringify(item), this.httpOptions)
+      return this.httpClient.put<iHardwareItem>(this.apiUrl +'/'+ objType +'/'+ id, JSON.stringify(item), this.httpOptions)
       .pipe(
         catchError(this.errorHandler)
       )

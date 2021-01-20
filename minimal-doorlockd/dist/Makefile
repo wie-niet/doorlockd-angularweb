@@ -12,6 +12,5 @@ static_html: minimal-doorlockd
 	mv -v minimal-doorlockd static_html
 
 minimal-doorlockd:
-	echo "ng build"
-	grep "public apiServer =" ../src/app/doorlockd/doorlockd-api-client.service.ts 
-	ng build
+	echo "ng build --prod"
+	ng build --prod
