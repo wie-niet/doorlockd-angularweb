@@ -2,7 +2,6 @@
 Web frontend for doorlockd
 
 ## build html
-make sure the correct `apiServer` api path is set in `src/app/doorlockd/doorlockd-api-client.service.ts`
 <pre>cd minimal-doorlockd/dist/
 make new
 
