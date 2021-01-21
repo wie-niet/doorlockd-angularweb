@@ -51,7 +51,7 @@ console.log( "debug JWT: ", jwtconf);
              return     localStorage.getItem('access_token');
           },
         
-        whitelistedDomains: [document.location.host, '192.168.7.2:8000', 'localhost:800', '192.168.6.2:8000'],
+        whitelistedDomains: [document.location.host, '192.168.7.2:8000', 'localhost:800', '192.168.6.2:8000', 'doorlockd-beta.local.:8000'],
         blacklistedRoutes: ['/html/']
       }
     })

@@ -35,22 +35,43 @@ export class UnknowntagsComponent implements OnInit {
     }
   }
 
-  sortTable(col: string, asc: boolean|null = null) {
+  sortTable(col: string|null = null, asc: boolean|null = null) {
     // show loading/bussy message
     this.req_loading_table = true;
+
+    if(col === null) {
+      // if not set read defaults from this.order || not sort at all
+      if (!this.order) {
+        this.req_loading_table = false;
+        return(null) // no sorting.
+      }
+
+      // parse this.order
+      if (this.order[0] == '!') {
+        // !colname
+        col = this.order.substring(1)
+        asc = false;
+      } else {
+        // colname
+        col = this.order
+        asc = true
+      }
+
+    }
 
     if(asc === null) {
       // determin direction from current this.order
       if(this.order == col) {
         asc = false // let's reverse
       } else {
+        // 'colname' != '!colname' ;-)
         asc = true; 
       }
     }
 
     if(this.unknowntags.length > 1) {
       if(typeof this.unknowntags[0][col] === 'string' ) {
-        // this.tags.sort((a,b) => a['description'].localeCompare(b['description']));
+        // this.unknowntags.sort((a,b) => a['description'].localeCompare(b['description']));
         if(asc) {
           this.unknowntags.sort((a,b) => a[col].localeCompare(b[col]));
         } else {
@@ -81,8 +102,9 @@ export class UnknowntagsComponent implements OnInit {
     // refresh table
     this.doorlockdApiClient.getAll(iObjType.unknowntags).subscribe((data: iUnknownTag[])=>{
       console.log(data);
-      this.req_loading_table = false;
       this.unknowntags = data;
+      //  sort table:
+      this.sortTable();
     }, (res) => {
       console.log('error list', res.error);
       this.req_error_table = res.error.error + ' - ' + res.error.message; 

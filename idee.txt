@@ -54,6 +54,10 @@ ng generate component doorlockd/login
 	- unkown tags: table, create , delete
 	- users ....
 
+[ ] copy sortTable -> to other components
+[ ] move CORS config to envirement
+[ ] make module for rest API tables
+
 #
 # Bugs
 #

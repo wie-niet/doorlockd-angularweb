@@ -23,7 +23,7 @@ export class TagsComponent implements OnInit {
   req_error_modal = null;
 
   // sort table:
-  order: string = '';
+  order: string = 'description';
 
   constructor(
     public fb: FormBuilder,
@@ -36,15 +36,36 @@ export class TagsComponent implements OnInit {
     }
   }
 
-  sortTable(col: string, asc: boolean|null = null) {
+  sortTable(col: string|null = null, asc: boolean|null = null) {
     // show loading/bussy message
     this.req_loading_table = true;
+
+    if(col === null) {
+      // if not set read defaults from this.order || not sort at all
+      if (!this.order) {
+        this.req_loading_table = false;
+        return(null) // no sorting.
+      }
+
+      // parse this.order
+      if (this.order[0] == '!') {
+        // !colname
+        col = this.order.substring(1)
+        asc = false;
+      } else {
+        // colname
+        col = this.order
+        asc = true
+      }
+
+    }
 
     if(asc === null) {
       // determin direction from current this.order
       if(this.order == col) {
         asc = false // let's reverse
       } else {
+        // 'colname' != '!colname' ;-)
         asc = true; 
       }
     }
@@ -84,7 +105,7 @@ export class TagsComponent implements OnInit {
       console.log(data);
       this.tags = data;
 
-      this.sortTable('description', true);
+      this.sortTable();
       
       this.req_loading_table = false;
     }, (res) => {

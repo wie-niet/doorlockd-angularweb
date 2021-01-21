@@ -24,7 +24,7 @@ export class UsersComponent implements OnInit {
   req_error_modal = null;
 
   // sort table:
-  order: string = '';
+  order: string = 'email';  // use 'colname' or '!colname' to reverse
 
 
   editNavId = 1; // edit user tab
@@ -69,15 +69,36 @@ export class UsersComponent implements OnInit {
     
   }
 
-  sortTable(col: string, asc: boolean|null = null) {
+  sortTable(col: string|null = null, asc: boolean|null = null) {
     // show loading/bussy message
     this.req_loading_table = true;
+
+    if(col === null) {
+      // if not set read defaults from this.order || not sort at all
+      if (!this.order) {
+        this.req_loading_table = false;
+        return(null) // no sorting.
+      }
+
+      // parse this.order
+      if (this.order[0] == '!') {
+        // !colname
+        col = this.order.substring(1)
+        asc = false;
+      } else {
+        // colname
+        col = this.order
+        asc = true
+      }
+
+    }
 
     if(asc === null) {
       // determin direction from current this.order
       if(this.order == col) {
         asc = false // let's reverse
       } else {
+        // 'colname' != '!colname' ;-)
         asc = true; 
       }
     }
@@ -157,7 +178,7 @@ export class UsersComponent implements OnInit {
       this.req_loading_table = false;
       this.users = data;
       //  sort table:
-      this.sortTable('email');
+      this.sortTable();
 
     }, (res) => {
       console.log('error list users', res.error);

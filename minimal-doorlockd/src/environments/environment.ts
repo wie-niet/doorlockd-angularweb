@@ -7,7 +7,8 @@ export const environment = {
 
   // URL path to the json rest api:
   // apiUrl: "http://localhost:8000/api",
-  apiUrl: "http://192.168.7.2:8000/api",
+  // apiUrl: "http://192.168.7.2:8000/api",
+  apiUrl: "http://doorlockd-beta.local.:8000/api"
   // apiUrl: "/api"
 
 };
