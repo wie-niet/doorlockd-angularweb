@@ -349,6 +349,11 @@ export class DoorlockdApiClientService {
           return throwError(error);
         }
 
+        // some error:
+        else if (error.error.error == "error") {
+          console.log("error error: " + error.error.message);
+          return throwError(error);
+        }          
         // if validation error:
         else if (error.error.type == "validation") {
           console.log("Validation error: " + error.error.message);

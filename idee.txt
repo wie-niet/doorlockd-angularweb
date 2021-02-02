@@ -53,11 +53,13 @@ ng generate component doorlockd/login
 	- tags: table, modal new , modal edit, delete 
 	- unkown tags: table, create , delete
 	- users ....
+	
+[ ] RFiD hwid 08 . random hwid.
 
-[ ] copy sortTable -> to other components
+
 [ ] move CORS config to envirement
 [ ] make module for rest API tables
-
+[ ] token broken error doesn't logout (idea: set error message, with logout --> login link?)
 #
 # Bugs
 #
