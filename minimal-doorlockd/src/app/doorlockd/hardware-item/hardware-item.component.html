@@ -42,3 +42,7 @@ json:
 <code> {{ hw_item | json }}</code>  
 ;<br>
 
+<div [hidden]="!api_error_msg" class="alert alert-warning" role="alert">
+    error: <code>{{api_error_msg | json }}</code>;
+</div>
+
